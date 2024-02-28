@@ -15,12 +15,17 @@ use Doctrine\ORM\EntityRepository;
 use Kdyby;
 use Nette;
 
-
-
 /**
  * @author Filip Procházka <filip@prochazka.su>
  */
 interface IRepositoryFactory
 {
-	public function create(ORM\EntityManagerInterface $em, ORM\Mapping\ClassMetadata $class): EntityRepository;
+
+
+	/**
+	 * @param ORM\EntityManagerInterface $entityManager
+	 * @param ORM\Mapping\ClassMetadata $classMetadata
+	 * @return EntityRepository
+	 */
+	public function create(ORM\EntityManagerInterface $entityManager, ORM\Mapping\ClassMetadata $classMetadata): EntityRepository;
 }

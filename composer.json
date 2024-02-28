@@ -3,7 +3,6 @@
   "type": "library",
   "description": "Doctrine integration into Nette Framework",
   "keywords": ["nette", "kdyby", "doctrine", "orm", "dbal"],
-  "homepage": "http://kdyby.org",
   "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
   "authors": [
     {
@@ -12,20 +11,18 @@
       "email": "filip@prochazka.su"
     }
   ],
-  "support": {
-    "email": "filip@prochazka.su",
-    "issues": "https://github.com/kdyby/doctrine/issues"
-  },
   "require": {
-    "php": "^7.1",
-    "doctrine/orm": "~2.7",
-    "doctrine/dbal": "~2.9",
-    "kdyby/console": "^2.7.1 || ^4.0.0",
-    "kdyby/annotations": "^3.0",
-    "kdyby/doctrine-cache": "^3.0",
-    "kdyby/strict-objects": "^2.0",
-    "nette/di": "^3.0",
-    "nette/utils": "^3.0",
+    "php": "^7.3 || ^8.0",
+    "psr/cache": "^1.0.1",
+    "doctrine/orm": "^2.7.1",
+    "doctrine/dbal": "~2.10",
+    "doctrine/common": "^3.0.3",
+    "kdyby/console": "^2.8",
+    "ijvo/kdyby-annotations": "dev-master",
+    "ijvo/kdyby-doctrine-cache": "dev-master",
+    "ijvo/kdyby-strict-objects": "dev-master",
+    "nette/di": "^3.1",
+    "nette/utils": "^3.2",
     "nette/finder": "^2.5"
   },
   "suggest": {
@@ -39,8 +36,11 @@
     "nette/bootstrap": "^3.0",
     "nette/caching": "^3.0",
     "nette/http": "^3.0",
-    "tracy/tracy": "^2.5",
-    "nette/tester": "^2.2"
+    "tracy/tracy": "^2.8",
+    "nette/tester": "^2.4",
+    "php-parallel-lint/php-console-highlighter": "^1.0",
+    "nette/code-checker": "^3.2",
+    "php-parallel-lint/php-parallel-lint": "^1.3"
   },
   "minimum-stability": "dev",
   "autoload": {
