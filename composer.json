@@ -17,7 +17,7 @@
     "doctrine/orm": "^2.7.1",
     "doctrine/dbal": "~2.10",
     "doctrine/common": "^3.0.3",
-    "kdyby/console": "^2.8",
+    "kdyby/console": "^2.8 || ^4.0.0",
     "ijvo/kdyby-annotations": "dev-master",
     "ijvo/kdyby-doctrine-cache": "dev-master",
     "ijvo/kdyby-strict-objects": "dev-master",
