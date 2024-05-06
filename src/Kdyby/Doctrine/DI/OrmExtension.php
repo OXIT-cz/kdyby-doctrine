@@ -193,7 +193,7 @@ class OrmExtension extends Nette\DI\CompilerExtension
 
 			$listener = $builder->addDefinition($this->prefix('resolveTargetEntityListener'))
 				->setClass(Kdyby\Doctrine\Tools\ResolveTargetEntityListener::class)
-				->addTag(\Kdyby\Events\DI\EventsExtension::TAG_SUBSCRIBER);
+				->addTag(Kdyby\Events\DI\EventsExtension::TAG_SUBSCRIBER);
 
 			foreach ($this->targetEntityMappings as $originalEntity => $mapping) {
 				$listener->addSetup('addResolveTargetEntity', [$originalEntity, $mapping['targetEntity'], $mapping]);
@@ -386,7 +386,7 @@ class OrmExtension extends Nette\DI\CompilerExtension
 
 		$builder->addFactoryDefinition($this->prefix('repositoryFactory.' . $name . '.defaultRepositoryFactory'))
 			->setImplement(IRepositoryFactory::class)
-//				->setParameters([EntityManagerInterface::class . ' entityManager', Doctrine\ORM\Mapping\ClassMetadata::class . ' classMetadata'])
+			->setParameters([EntityManagerInterface::class . ' entityManager', Doctrine\ORM\Mapping\ClassMetadata::class . ' classMetadata'])
 			->getResultDefinition()
 			->setFactory($config['defaultRepositoryClassName'])
 			->setArguments([new Code\PhpLiteral('$entityManager'), new Code\PhpLiteral('$classMetadata')])
@@ -693,7 +693,7 @@ class OrmExtension extends Nette\DI\CompilerExtension
 			$factoryServiceName = $this->prefix('repositoryFactory.' . $originalServiceName);
 			$factoryDef = $builder->addFactoryDefinition($factoryServiceName)
 				->setImplement(IRepositoryFactory::class)
-//				->setParameters([Doctrine\ORM\EntityManagerInterface::class . ' entityManager', Doctrine\ORM\Mapping\ClassMetadata::class . ' classMetadata'])
+				->setParameters([Doctrine\ORM\EntityManagerInterface::class . ' entityManager', Doctrine\ORM\Mapping\ClassMetadata::class . ' classMetadata'])
 				->setAutowired(FALSE)
 				->getResultDefinition()
 				->setFactory($originalDef->getFactory());
@@ -853,9 +853,9 @@ class OrmExtension extends Nette\DI\CompilerExtension
 	private function addCollapsePathsToTracy(Method $init)
 	{
 		$blueScreen = \Tracy\Debugger::class . '::getBlueScreen()';
-		$commonDirname = dirname(\Nette\Reflection\ClassType::from(Doctrine\Common\Version::class)->getFileName());
+		$commonDirname = dirname((new \ReflectionClass(\Doctrine\Common\CommonException::class))->getFileName());
 
-		$init->addBody($blueScreen . '->collapsePaths[] = ?;', [dirname(Nette\Reflection\ClassType::from(Kdyby\Doctrine\Exception::class)->getFileName())]);
+		$init->addBody($blueScreen . '->collapsePaths[] = ?;', [dirname((new \ReflectionClass(Kdyby\Doctrine\Exception::class))->getFileName())]);
 		$init->addBody($blueScreen . '->collapsePaths[] = ?;', [dirname(dirname(dirname(dirname($commonDirname))))]); // this should be vendor/doctrine
 		foreach ($this->proxyAutoloaders as $dir) {
 			$init->addBody($blueScreen . '->collapsePaths[] = ?;', [$dir]);
