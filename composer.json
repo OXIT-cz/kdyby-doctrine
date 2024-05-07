@@ -16,17 +16,24 @@
     "email": "filip@prochazka.su",
     "issues": "https://github.com/kdyby/doctrine/issues"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:OXIT-cz/kdyby-console.git"
+    }
+  ],
   "require": {
-    "php": "^7.1",
-    "doctrine/orm": "~2.7",
-    "doctrine/dbal": "~2.9",
-    "kdyby/console": "^2.7.1",
-    "kdyby/annotations": "^3.0",
-    "kdyby/doctrine-cache": "^3.0",
-    "kdyby/strict-objects": "^2.0",
-    "nette/di": "^3.0",
-    "nette/utils": "^3.0",
-    "nette/finder": "^2.5"
+    "php": "^7.3 || ^8.0",
+    "doctrine/orm": "^2.7.1",
+    "doctrine/dbal": "~2.10",
+    "doctrine/common": "^3.0.3",
+    "kdyby/console": "dev-master",
+    "ijvo/kdyby-annotations": "dev-master",
+    "ijvo/kdyby-doctrine-cache": "dev-master",
+    "ijvo/kdyby-strict-objects": "dev-master",
+    "nette/di": "^3.1",
+    "nette/utils": "^3.2 || ^4.0",
+    "nette/bootstrap": "^3.1"
   },
   "suggest": {
     "kdyby/doctrine-magic-accessors": "Fast-prototyping magic accessors trait for Doctrine entities",
@@ -34,15 +41,8 @@
     "kdyby/doctrine-collections-lazy": "Lazy collection for doctrine/collections",
     "kdyby/doctrine-dbal-batchimport": "Batch import & execute utils for effective processing of SQL Imports from files and strings"
   },
-  "require-dev": {
-    "kdyby/events": "^3.1.1@dev",
-    "nette/bootstrap": "^3.0",
-    "nette/caching": "^3.0",
-    "nette/http": "^3.0",
-    "tracy/tracy": "^2.5",
-    "nette/tester": "^2.2"
-  },
   "minimum-stability": "dev",
+  "prefer-stable": true,
   "autoload": {
     "psr-0": {
       "Kdyby\\Doctrine\\": "src/",
