@@ -14,7 +14,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "git@github.com:OXIT-cz/kdyby-doctrine.git"
+      "url": "git@github.com:OXIT-cz/kdyby-console.git"
     }
   ],
   "require": {
