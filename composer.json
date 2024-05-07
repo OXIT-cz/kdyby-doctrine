@@ -11,12 +11,18 @@
       "email": "filip@prochazka.su"
     }
   ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:OXIT-cz/kdyby-doctrine.git"
+    }
+  ],
   "require": {
     "php": "^7.3 || ^8.0",
     "doctrine/orm": "^2.7.1",
     "doctrine/dbal": "~2.10",
     "doctrine/common": "^3.0.3",
-    "kdyby/console": "^2.8 || ^4.0",
+    "kdyby/console": "dev-master",
     "ijvo/kdyby-annotations": "dev-master",
     "ijvo/kdyby-doctrine-cache": "dev-master",
     "ijvo/kdyby-strict-objects": "dev-master",
