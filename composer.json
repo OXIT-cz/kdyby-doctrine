@@ -20,7 +20,7 @@
   "require": {
     "php": "^7.3 || ^8.0",
     "doctrine/orm": "^2.7.1",
-    "doctrine/dbal": "^3.0",
+    "doctrine/dbal": "~2.10",
     "doctrine/common": "^3.0.3",
     "kdyby/console": "dev-master",
     "ijvo/kdyby-annotations": "dev-master",
