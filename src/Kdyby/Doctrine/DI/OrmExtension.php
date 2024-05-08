@@ -64,6 +64,7 @@ class OrmExtension extends Nette\DI\CompilerExtension
 			'logging' => '%debugMode%',
 		],
 		'classMetadataFactory' => Kdyby\Doctrine\Mapping\ClassMetadataFactory::class,
+		'entityManager' => Kdyby\Doctrine\EntityManager::class,
 		'defaultRepositoryClassName' => Kdyby\Doctrine\EntityRepository::class,
 		'repositoryFactoryClassName' => Kdyby\Doctrine\RepositoryFactory::class,
 		'queryBuilderClassName' => Kdyby\Doctrine\QueryBuilder::class,
@@ -370,8 +371,8 @@ class OrmExtension extends Nette\DI\CompilerExtension
 
 		// entity manager
 		$entityManager = $builder->addDefinition($managerServiceId = $this->prefix($name . '.entityManager'))
-			->setClass(Kdyby\Doctrine\EntityManager::class)
-			->setFactory(Kdyby\Doctrine\EntityManager::class . '::create', [
+			->setClass($config['entityManager'])
+			->setFactory($config['entityManager'] . '::create', [
 				$connectionService = $this->processConnection($name, $defaults, $isDefault),
 				$this->prefix('@' . $name . '.ormConfiguration'),
 				$this->prefix('@' . $name . '.evm'),
