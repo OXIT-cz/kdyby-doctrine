@@ -16,12 +16,6 @@
     "email": "filip@prochazka.su",
     "issues": "https://github.com/kdyby/doctrine/issues"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:OXIT-cz/kdyby-console.git"
-    }
-  ],
   "require": {
     "php": "^7.3 || ^8.0",
     "doctrine/orm": "^2.7.1",
