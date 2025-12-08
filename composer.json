@@ -2,58 +2,74 @@
   "name": "kdyby/doctrine",
   "type": "library",
   "description": "Doctrine integration into Nette Framework",
-  "keywords": ["nette", "kdyby", "doctrine", "orm", "dbal"],
+  "keywords": [
+	"nette",
+	"kdyby",
+	"doctrine",
+	"orm",
+	"dbal"
+  ],
   "homepage": "http://kdyby.org",
-  "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+  "license": [
+	"BSD-3-Clause",
+	"GPL-2.0",
+	"GPL-3.0"
+  ],
   "authors": [
-    {
-      "name": "Filip Procházka",
-      "homepage": "http://filip-prochazka.com",
-      "email": "filip@prochazka.su"
-    }
+	{
+	  "name": "Filip Procházka",
+	  "homepage": "http://filip-prochazka.com",
+	  "email": "filip@prochazka.su"
+	}
   ],
   "support": {
-    "email": "filip@prochazka.su",
-    "issues": "https://github.com/kdyby/doctrine/issues"
+	"email": "filip@prochazka.su",
+	"issues": "https://github.com/kdyby/doctrine/issues"
   },
+  "repositories": [
+	{
+	  "type": "vcs",
+	  "url": "git@github.com:BianoCZ/Console.git"
+	}
+  ],
   "require": {
-    "php": "^7.3 || ^8.0",
-    "doctrine/orm": "^2.7.1",
-    "doctrine/dbal": "~2.10",
-    "doctrine/common": "^3.0.3",
-    "kdyby/console": "dev-master",
-    "ijvo/kdyby-annotations": "dev-master",
-    "ijvo/kdyby-doctrine-cache": "dev-master",
-    "ijvo/kdyby-strict-objects": "dev-master",
-    "nette/di": "^3.1",
-    "nette/utils": "^3.2 || ^4.0",
-    "nette/bootstrap": "^3.1"
+	"php": "^7.3 || ^8.0",
+	"doctrine/orm": "^2.7.1",
+	"doctrine/dbal": "~2.10",
+	"doctrine/common": "^3.0.3",
+	"kdyby/console": "dev-master",
+	"ijvo/kdyby-annotations": "dev-master",
+	"ijvo/kdyby-doctrine-cache": "dev-master",
+	"ijvo/kdyby-strict-objects": "dev-master",
+	"nette/di": "^3.1",
+	"nette/utils": "^3.2 || ^4.0",
+	"nette/bootstrap": "^3.1"
   },
   "suggest": {
-    "kdyby/doctrine-magic-accessors": "Fast-prototyping magic accessors trait for Doctrine entities",
-    "kdyby/doctrine-collections-readonly": "Read-only collection wrapper for easier work with Doctrine entity collections",
-    "kdyby/doctrine-collections-lazy": "Lazy collection for doctrine/collections",
-    "kdyby/doctrine-dbal-batchimport": "Batch import & execute utils for effective processing of SQL Imports from files and strings"
+	"kdyby/doctrine-magic-accessors": "Fast-prototyping magic accessors trait for Doctrine entities",
+	"kdyby/doctrine-collections-readonly": "Read-only collection wrapper for easier work with Doctrine entity collections",
+	"kdyby/doctrine-collections-lazy": "Lazy collection for doctrine/collections",
+	"kdyby/doctrine-dbal-batchimport": "Batch import & execute utils for effective processing of SQL Imports from files and strings"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "autoload": {
-    "psr-0": {
-      "Kdyby\\Doctrine\\": "src/",
-      "Kdyby\\Persistence\\": "src/"
-    },
-    "classmap": [
-      "src/Kdyby/Doctrine/exceptions.php"
-    ]
+	"psr-0": {
+	  "Kdyby\\Doctrine\\": "src/",
+	  "Kdyby\\Persistence\\": "src/"
+	},
+	"classmap": [
+	  "src/Kdyby/Doctrine/exceptions.php"
+	]
   },
   "autoload-dev": {
-    "classmap": [
-      "tests/KdybyTests"
-    ]
+	"classmap": [
+	  "tests/KdybyTests"
+	]
   },
   "extra": {
-    "branch-alias": {
-      "dev-master": "4.0-dev"
-    }
+	"branch-alias": {
+	  "dev-master": "4.0-dev"
+	}
   }
 }
