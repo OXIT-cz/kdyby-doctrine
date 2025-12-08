@@ -29,7 +29,15 @@
   "repositories": [
 	{
 	  "type": "vcs",
-	  "url": "git@github.com:BianoCZ/Console.git"
+	  "url": "git@github.com:OXIT-cz/kdyby-events.git"
+	},
+	{
+	  "type": "vcs",
+	  "url": "git@github.com:OXIT-cz/kdyby-console.git"
+	},
+	{
+	  "type": "vcs",
+	  "url": "git@github.com:OXIT-cz/kdyby-annotations.git"
 	}
   ],
   "require": {
@@ -37,8 +45,8 @@
 	"doctrine/orm": "^2.7.1",
 	"doctrine/dbal": "^3.6",
 	"doctrine/common": "^3.0.3",
-	"kdyby/console": "dev-update-symfony",
-	"ijvo/kdyby-annotations": "dev-master",
+	"kdyby/console": "dev-master",
+	"kdyby/annotations": "dev-master",
 	"ijvo/kdyby-doctrine-cache": "dev-master",
 	"ijvo/kdyby-strict-objects": "dev-master",
 	"nette/di": "^3.1",
