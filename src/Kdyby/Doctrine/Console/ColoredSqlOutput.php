@@ -39,7 +39,23 @@ class ColoredSqlOutput implements OutputInterface
 
 
 
-	protected function formatSqls($message)
+	protected function formatSqls($messages)
+	{
+		if (is_iterable($messages)) {
+			$formatted = [];
+			foreach ($messages as $message) {
+				$formatted[] = $this->formatSql($message);
+			}
+
+			return $formatted;
+		}
+
+		return $this->formatSql($messages);
+	}
+
+
+
+	protected function formatSql($message)
 	{
 		$message = Nette\Utils\Strings::replace($message, "~((?:CREATE|ALTER|DROP)\\s+TABLE|(?:DROP|CREATE)\\s+INDEX)[^;]+;~i", function (array $match) {
 			$output = Nette\Utils\Strings::replace($match[0], '~(?<=\b)([^\s]*[a-z]+[^\s]*)(?=\b)~', function ($id) {
@@ -66,9 +82,9 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function write($messages, $newline = false, $type = self::OUTPUT_NORMAL)
+	public function write(string|iterable $messages, bool $newline = false, int $options = 0): void
 	{
-		return $this->output->write($this->formatSqls($messages), $newline, $type);
+		$this->output->write($this->formatSqls($messages), $newline, $options);
 	}
 
 
@@ -76,9 +92,9 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function writeln($messages, $type = self::OUTPUT_NORMAL)
+	public function writeln(string|iterable $messages, int $options = 0): void
 	{
-		return $this->output->writeln($this->formatSqls($messages), $type);
+		$this->output->writeln($this->formatSqls($messages), $options);
 	}
 
 
@@ -86,9 +102,9 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setVerbosity($level)
+	public function setVerbosity(int $level): void
 	{
-		return $this->output->setVerbosity($level);
+		$this->output->setVerbosity($level);
 	}
 
 
@@ -96,7 +112,7 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getVerbosity()
+	public function getVerbosity(): int
 	{
 		return $this->output->getVerbosity();
 	}
@@ -106,9 +122,9 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setDecorated($decorated)
+	public function isSilent(): bool
 	{
-		return $this->output->setDecorated($decorated);
+		return $this->output->isSilent();
 	}
 
 
@@ -116,7 +132,17 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function isDecorated()
+	public function setDecorated(bool $decorated): void
+	{
+		$this->output->setDecorated($decorated);
+	}
+
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isDecorated(): bool
 	{
 		return $this->output->isDecorated();
 	}
@@ -126,7 +152,7 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function isQuiet()
+	public function isQuiet(): bool
 	{
 		return $this->output->isQuiet();
 	}
@@ -136,7 +162,7 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function isVerbose()
+	public function isVerbose(): bool
 	{
 		return $this->output->isVerbose();
 	}
@@ -146,7 +172,7 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function isVeryVerbose()
+	public function isVeryVerbose(): bool
 	{
 		return $this->output->isVeryVerbose();
 	}
@@ -156,7 +182,7 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function isDebug()
+	public function isDebug(): bool
 	{
 		return $this->output->isDebug();
 	}
@@ -166,9 +192,9 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setFormatter(OutputFormatterInterface $formatter)
+	public function setFormatter(OutputFormatterInterface $formatter): void
 	{
-		return $this->output->setFormatter($formatter);
+		$this->output->setFormatter($formatter);
 	}
 
 
@@ -176,7 +202,7 @@ class ColoredSqlOutput implements OutputInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getFormatter()
+	public function getFormatter(): OutputFormatterInterface
 	{
 		return $this->output->getFormatter();
 	}

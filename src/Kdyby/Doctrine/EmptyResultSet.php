@@ -82,7 +82,7 @@ class EmptyResultSet extends ResultSet
 
 
 
-	public function getIterator($hydrationMode = ORM\AbstractQuery::HYDRATE_OBJECT)
+	public function getIterator($hydrationMode = ORM\AbstractQuery::HYDRATE_OBJECT): \ArrayIterator
 	{
 		return new \ArrayIterator();
 	}
@@ -96,7 +96,7 @@ class EmptyResultSet extends ResultSet
 
 
 
-	public function count()
+	public function count(): int
 	{
 		return 0;
 	}

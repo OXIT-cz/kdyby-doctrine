@@ -11,11 +11,10 @@
 namespace Kdyby\Doctrine\Tools;
 
 use Doctrine;
-use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
-use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Platforms\SqlitePlatform;
-use Doctrine\DBAL\Statement;
 use Doctrine\DBAL\Types\Type;
 use Kdyby;
 use Kdyby\Doctrine\Connection;
@@ -179,7 +178,7 @@ class NonLockingUniqueInserter
 			. ' VALUES (' . implode(', ', array_fill(0, count($columns), '?')) . ')';
 
 		// create statement
-		$statement = new Statement($insertSql, $this->db);
+		$statement = $this->db->prepare($insertSql);
 
 		// bind values
 		$paramIndex = 1;
@@ -204,9 +203,9 @@ class NonLockingUniqueInserter
 		/** @var \PDOException $e */
 
 		return
-			($this->platform instanceof MySqlPlatform && $e->errorInfo[1] === Connection::MYSQL_ERR_UNIQUE) ||
+			($this->platform instanceof MySQLPlatform && $e->errorInfo[1] === Connection::MYSQL_ERR_UNIQUE) ||
 			($this->platform instanceof SqlitePlatform && $e->errorInfo[1] === Connection::SQLITE_ERR_UNIQUE) ||
-			($this->platform instanceof PostgreSqlPlatform && $e->errorInfo[1] === Connection::POSTGRE_ERR_UNIQUE);
+			($this->platform instanceof PostgreSQLPlatform && $e->errorInfo[1] === Connection::POSTGRE_ERR_UNIQUE);
 	}
 
 

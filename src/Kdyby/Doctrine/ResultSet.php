@@ -95,7 +95,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 	 * @param \Kdyby\Doctrine\QueryObject $queryObject
 	 * @param \Kdyby\Persistence\Queryable $repository
 	 */
-	public function __construct(ORM\AbstractQuery $query, QueryObject $queryObject = NULL, Queryable $repository = NULL)
+	public function __construct(ORM\AbstractQuery $query, ?QueryObject $queryObject = NULL, ?Queryable $repository = NULL)
 	{
 		$this->query = $query;
 		$this->queryObject = $queryObject;
@@ -312,7 +312,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 	 * @throws QueryException
 	 * @return \ArrayIterator
 	 */
-	public function getIterator($hydrationMode = ORM\AbstractQuery::HYDRATE_OBJECT)
+	public function getIterator($hydrationMode = ORM\AbstractQuery::HYDRATE_OBJECT): \ArrayIterator
 	{
 		if ($this->iterator !== NULL) {
 			return $this->iterator;
@@ -356,7 +356,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 	/**
 	 * @return int
 	 */
-	public function count()
+	public function count(): int
 	{
 		return $this->getIterator()->count();
 	}

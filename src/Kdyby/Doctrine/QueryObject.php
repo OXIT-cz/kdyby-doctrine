@@ -131,7 +131,7 @@ abstract class QueryObject implements Kdyby\Persistence\Query
 	 * @param \Doctrine\ORM\Tools\Pagination\Paginator $paginatedQuery
 	 * @return integer
 	 */
-	public function count(Queryable $repository, ResultSet $resultSet = NULL, Paginator $paginatedQuery = NULL)
+	public function count(Queryable $repository, ?ResultSet $resultSet = NULL, ?Paginator $paginatedQuery = NULL)
 	{
 		if ($query = $this->doCreateCountQuery($repository)) {
 			return (int)$this->toQuery($query)->getSingleScalarResult();

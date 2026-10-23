@@ -50,7 +50,7 @@ abstract class OrmDelegateCommand extends Command
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function configure()
+	protected function configure(): void
 	{
 		$this->command = $this->createCommand();
 
@@ -66,7 +66,7 @@ abstract class OrmDelegateCommand extends Command
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		return $this->wrapCommand($input->getOption('em'))->execute($input, $output);
 	}
@@ -74,7 +74,7 @@ abstract class OrmDelegateCommand extends Command
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function interact(InputInterface $input, OutputInterface $output)
+	protected function interact(InputInterface $input, OutputInterface $output): void
 	{
 		$this->wrapCommand($input->getOption('em'))->interact($input, $output);
 	}
@@ -82,7 +82,7 @@ abstract class OrmDelegateCommand extends Command
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function initialize(InputInterface $input, OutputInterface $output)
+	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
 		$this->wrapCommand($input->getOption('em'))->initialize($input, $output);
 	}

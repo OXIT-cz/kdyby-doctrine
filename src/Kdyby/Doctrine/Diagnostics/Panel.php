@@ -89,7 +89,7 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 	 * @param array|null $params
 	 * @param array|null $types
 	 */
-	public function startQuery($sql, array $params = NULL, array $types = NULL)
+	public function startQuery($sql, ?array $params = NULL, ?array $types = NULL)
 	{
 		Debugger::timer('doctrine');
 
@@ -416,14 +416,14 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 			];
 
 		} elseif ($e instanceof Doctrine\DBAL\Exception\DriverException) {
-			if (($prev = $e->getPrevious()) && ($item = Helpers::findTrace($e->getTrace(), Doctrine\DBAL\DBALException::class . '::driverExceptionDuringQuery'))) {
-				/** @var \Doctrine\DBAL\Driver $driver */
-				$driver = $item['args'][0];
-				$params = isset($item['args'][3]) ? $item['args'][3] : [];
+			if (($prev = $e->getPrevious()) && ($item = Helpers::findTrace($e->getTrace(), Doctrine\DBAL\Connection::class . '::convertExceptionDuringQuery'))) {
+				/** @var \Doctrine\DBAL\Connection $connection */
+				$connection = $item['object'];
+				$params = isset($item['args'][2]) ? $item['args'][2] : [];
 
 				return [
 					'tab' => 'SQL',
-					'panel' => self::highlightQuery(static::formatQuery($item['args'][2], $params, [], $driver->getDatabasePlatform())),
+					'panel' => self::highlightQuery(static::formatQuery($item['args'][1], $params, [], $connection->getDatabasePlatform())),
 				];
 			}
 
@@ -558,10 +558,10 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 	 * @throws \Nette\Utils\RegexpException
 	 * @return string
 	 */
-	public static function formatQuery($query, $params, array $types = [], AbstractPlatform $platform = NULL)
+	public static function formatQuery($query, $params, array $types = [], ?AbstractPlatform $platform = NULL)
 	{
 		if ($platform === NULL) {
-			$platform = new Doctrine\DBAL\Platforms\MySqlPlatform();
+			$platform = new Doctrine\DBAL\Platforms\MySQLPlatform();
 		}
 
 		if (!$types) {
@@ -575,10 +575,9 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 			}
 		}
 
-		try {
-			list($query, $params, $types) = \Doctrine\DBAL\SQLParserUtils::expandListParameters($query, $params, $types);
-		} catch (Doctrine\DBAL\SQLParserUtilsException $e) {
-		}
+		// Note: list (array) parameters are no longer expanded here for display purposes,
+		// since doctrine/dbal removed SQLParserUtils; this only affects cosmetic rendering
+		// of IN (...) placeholders in the debug panel.
 
 		$formattedParams = [];
 		foreach ($params as $key => $param) {

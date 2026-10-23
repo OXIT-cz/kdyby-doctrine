@@ -125,7 +125,7 @@ class DBALException extends \RuntimeException implements Exception
 	 * @param \Doctrine\DBAL\Connection|NULL $connection
 	 * @param string|NULL $message
 	 */
-	public function __construct($previous, $query = NULL, $params = [], Doctrine\DBAL\Connection $connection = NULL, $message = NULL)
+	public function __construct($previous, $query = NULL, $params = [], ?Doctrine\DBAL\Connection $connection = NULL, $message = NULL)
 	{
 		parent::__construct($message ?: $previous->getMessage(), $previous->getCode(), $previous);
 		$this->query = $query;
@@ -170,7 +170,7 @@ class DuplicateEntryException extends DBALException
 	 * @param array $params
 	 * @param \Doctrine\DBAL\Connection $connection
 	 */
-	public function __construct($previous, $columns = [], $query = NULL, $params = [], Doctrine\DBAL\Connection $connection = NULL)
+	public function __construct($previous, $columns = [], $query = NULL, $params = [], ?Doctrine\DBAL\Connection $connection = NULL)
 	{
 		parent::__construct($previous, $query, $params, $connection);
 		$this->columns = $columns;
@@ -211,7 +211,7 @@ class EmptyValueException extends DBALException
 	 * @param array $params
 	 * @param \Doctrine\DBAL\Connection $connection
 	 */
-	public function __construct($previous, $column = NULL, $query = NULL, $params = [], Doctrine\DBAL\Connection $connection = NULL)
+	public function __construct($previous, $column = NULL, $query = NULL, $params = [], ?Doctrine\DBAL\Connection $connection = NULL)
 	{
 		parent::__construct($previous, $query, $params, $connection);
 		$this->column = $column;
@@ -249,7 +249,7 @@ class QueryException extends \RuntimeException implements Exception
 	 * @param \Doctrine\ORM\AbstractQuery|NULL $query
 	 * @param string|NULL $message
 	 */
-	public function __construct($previous, Doctrine\ORM\AbstractQuery $query = NULL, $message = NULL)
+	public function __construct($previous, ?Doctrine\ORM\AbstractQuery $query = NULL, $message = NULL)
 	{
 		parent::__construct($message ?: $previous->getMessage(), 0, $previous);
 		$this->query = $query;

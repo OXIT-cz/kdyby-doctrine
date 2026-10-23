@@ -147,11 +147,11 @@ class Connection extends Doctrine\DBAL\Connection
 	 * @param string $query
 	 * @param array $params
 	 * @param array $types
-	 * @param \Doctrine\DBAL\Cache\QueryCacheProfile $qcp
-	 * @return Driver\ResultStatement
+	 * @param \Doctrine\DBAL\Cache\QueryCacheProfile|NULL $qcp
+	 * @return Doctrine\DBAL\Result
 	 * @throws DBALException
 	 */
-	public function executeQuery($query, array $params = [], $types = [], Doctrine\DBAL\Cache\QueryCacheProfile $qcp = NULL)
+	public function executeQuery(string $query, array $params = [], $types = [], ?Doctrine\DBAL\Cache\QueryCacheProfile $qcp = NULL): Doctrine\DBAL\Result
 	{
 		try {
 			return parent::executeQuery($query, $params, $types, $qcp);
@@ -169,8 +169,9 @@ class Connection extends Doctrine\DBAL\Connection
 	 * @param array $types
 	 * @return int
 	 * @throws DBALException
+	 * @deprecated Use {@see executeStatement()} instead
 	 */
-	public function executeUpdate($query, array $params = [], array $types = [])
+	public function executeUpdate(string $query, array $params = [], array $types = []): int
 	{
 		try {
 			return parent::executeUpdate($query, $params, $types);
@@ -183,11 +184,31 @@ class Connection extends Doctrine\DBAL\Connection
 
 
 	/**
+	 * @param string $sql
+	 * @param array $params
+	 * @param array $types
+	 * @return int|string
+	 * @throws DBALException
+	 */
+	public function executeStatement($sql, array $params = [], array $types = [])
+	{
+		try {
+			return parent::executeStatement($sql, $params, $types);
+
+		} catch (\Exception $e) {
+			throw $this->resolveException($e, $sql, $params);
+		}
+	}
+
+
+
+	/**
 	 * @param string $statement
 	 * @return int
 	 * @throws DBALException
+	 * @deprecated Use {@see executeStatement()} instead
 	 */
-	public function exec($statement)
+	public function exec(string $statement): int
 	{
 		try {
 			return parent::exec($statement);
@@ -200,17 +221,18 @@ class Connection extends Doctrine\DBAL\Connection
 
 
 	/**
-	 * @return \Doctrine\DBAL\Driver\Statement|mixed
+	 * @param string $sql
+	 * @return Doctrine\DBAL\Result
 	 * @throws DBALException
+	 * @deprecated Use {@see executeQuery()} instead
 	 */
-	public function query()
+	public function query(string $sql): Doctrine\DBAL\Result
 	{
-		$args = func_get_args();
 		try {
-			return call_user_func_array('parent::query', $args);
+			return parent::query($sql);
 
 		} catch (\Exception $e) {
-			throw $this->resolveException($e, func_get_arg(0));
+			throw $this->resolveException($e, $sql);
 		}
 	}
 
@@ -219,24 +241,22 @@ class Connection extends Doctrine\DBAL\Connection
 	/**
 	 * Prepares an SQL statement.
 	 *
-	 * @param string $statement The SQL statement to prepare.
+	 * @param string $sql The SQL statement to prepare.
 	 * @throws DBALException
 	 * @return PDOStatement The prepared statement.
 	 */
-	public function prepare($statement)
+	public function prepare(string $sql): Doctrine\DBAL\Statement
 	{
-		$this->connect();
+		$connection = $this->getWrappedConnection();
 
 		try {
-			$stmt = new PDOStatement($statement, $this);
+			$stmt = $connection->prepare($sql);
 
-		} catch (\Exception $ex) {
-			throw $this->resolveException(Doctrine\DBAL\DBALException::driverExceptionDuringQuery($this->getDriver(), $ex, $statement), $statement);
+		} catch (Doctrine\DBAL\Driver\Exception $ex) {
+			throw $this->resolveException($this->convertExceptionDuringQuery($ex, $sql), $sql);
 		}
 
-		$stmt->setFetchMode(PDO::FETCH_ASSOC);
-
-		return $stmt;
+		return new PDOStatement($this, $stmt, $sql);
 	}
 
 
@@ -338,7 +358,7 @@ class Connection extends Doctrine\DBAL\Connection
 
 			return TRUE;
 
-		} catch (Doctrine\DBAL\DBALException $e) {
+		} catch (Doctrine\DBAL\Exception $e) {
 			restore_error_handler();
 			return FALSE;
 
@@ -383,7 +403,7 @@ class Connection extends Doctrine\DBAL\Connection
 			return $e;
 		}
 
-		if ($e instanceof Doctrine\DBAL\DBALException && ($pe = $e->getPrevious()) instanceof \PDOException) {
+		if ($e instanceof Doctrine\DBAL\Exception && ($pe = $e->getPrevious()) instanceof \PDOException) {
 			$info = $pe->errorInfo;
 
 		} elseif ($e instanceof \PDOException) {
@@ -393,7 +413,7 @@ class Connection extends Doctrine\DBAL\Connection
 			return new DBALException($e, $query, $params, $this);
 		}
 
-		if ($this->getDriver() instanceof Doctrine\DBAL\Driver\PDOMySql\Driver) {
+		if ($this->getDriver() instanceof Doctrine\DBAL\Driver\PDO\MySQL\Driver) {
 			if ($info[0] == 23000 && $info[1] == self::MYSQL_ERR_UNIQUE) { // unique fail
 				$columns = [];
 
@@ -438,11 +458,11 @@ class Connection extends Doctrine\DBAL\Connection
 	 */
 	private static function resolveExceptionTable($e)
 	{
-		if (!$e instanceof Doctrine\DBAL\DBALException) {
+		if (!$e instanceof Doctrine\DBAL\Exception) {
 			return NULL;
 		}
 
-		if ($caused = Tracy\Helpers::findTrace($e->getTrace(), Doctrine\DBAL\DBALException::class . '::driverExceptionDuringQuery')) {
+		if ($caused = Tracy\Helpers::findTrace($e->getTrace(), Doctrine\DBAL\Connection::class . '::convertExceptionDuringQuery')) {
 			if (preg_match('~(?:INSERT|UPDATE|REPLACE)(?:[A-Z_\s]*)`?([^\s`]+)`?\s*~', is_string($caused['args'][1]) ? $caused['args'][1] : $caused['args'][2], $m)) {
 				return $m[1];
 			}

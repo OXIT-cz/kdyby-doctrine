@@ -32,7 +32,7 @@ use Nette;
 class EntityRepository extends Doctrine\ORM\EntityRepository implements Persistence\QueryExecutor, Persistence\Queryable //, Persistence\ObjectFactory
 {
 	
-	public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+	public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null)
 	{
 		if ($this->criteriaRequiresDql($criteria) === FALSE && $this->criteriaRequiresDql((array) $orderBy) === FALSE) {
 			return parent::findBy($criteria, $orderBy, $limit, $offset);
@@ -50,7 +50,7 @@ class EntityRepository extends Doctrine\ORM\EntityRepository implements Persiste
 
 
 
-	public function findOneBy(array $criteria, array $orderBy = null)
+	public function findOneBy(array $criteria, ?array $orderBy = null)
 	{
 		if ($this->criteriaRequiresDql($criteria) === FALSE && $this->criteriaRequiresDql((array) $orderBy) === FALSE) {
 			return parent::findOneBy($criteria, $orderBy);
@@ -301,7 +301,7 @@ class EntityRepository extends Doctrine\ORM\EntityRepository implements Persiste
 	 * @param string $message
 	 * @return \Exception|\Kdyby\Doctrine\QueryException
 	 */
-	private function handleException(\Exception $e, Doctrine\ORM\Query $query = NULL, $message = NULL)
+	private function handleException(\Exception $e, ?Doctrine\ORM\Query $query = NULL, $message = NULL)
 	{
 		if ($e instanceof Doctrine\ORM\Query\QueryException) {
 			return new QueryException($e, $query, $message);

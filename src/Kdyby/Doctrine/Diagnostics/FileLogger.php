@@ -47,7 +47,7 @@ class FileLogger implements SQLLogger
 
 
 
-	public function startQuery($sql, array $params = null, array $types = null)
+	public function startQuery($sql, ?array $params = null, ?array $types = null)
 	{
 		$highlighted = Panel::highlightQuery(Panel::formatQuery($sql, (array) $params, (array) $types));
 		$formatted = html_entity_decode(strip_tags($highlighted));

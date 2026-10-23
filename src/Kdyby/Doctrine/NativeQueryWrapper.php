@@ -11,8 +11,6 @@
 namespace Kdyby\Doctrine;
 
 use Doctrine\DBAL\Cache\QueryCacheProfile;
-use Doctrine\DBAL\SQLParserUtils;
-use Doctrine\DBAL\SQLParserUtilsException;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
@@ -102,25 +100,13 @@ final class NativeQueryWrapper extends AbstractQuery
 	protected function getLimitedQuery()
 	{
 		$copy = clone $this->nativeQuery;
-		$copy->setParameters([]);
 
-		try {
-			$params = $types = [];
-			/** @var Query\Parameter $param */
-			foreach ($this->nativeQuery->getParameters() as $param) {
-				$params[$param->getName()] = $param->getValue();
-				$types[$param->getName()] = $param->getType();
-			}
-
-			list($query, $params, $types) = SQLParserUtils::expandListParameters($copy->getSQL(), $params, $types);
-
-			$copy->setSQL($query);
-			foreach ($params as $i => $value) {
-				$copy->setParameter($i, $value, isset($types[$i]) ? $types[$i] : NULL);
-			}
-
-		} catch (SQLParserUtilsException $e) {
-			$copy->setParameters(clone $this->nativeQuery->getParameters());
+		// AbstractQuery::__clone() resets the parameters, so they have to be copied over manually.
+		// List (array) parameters no longer need pre-expanding here (SQLParserUtils was removed from
+		// doctrine/dbal) - Doctrine\DBAL\Connection expands them itself when the query is executed.
+		/** @var Query\Parameter $param */
+		foreach ($this->nativeQuery->getParameters() as $param) {
+			$copy->setParameter($param->getName(), $param->getValue(), $param->typeWasSpecified() ? $param->getType() : NULL);
 		}
 
 		if ($this->maxResults !== NULL || $this->firstResult !== NULL) {
@@ -339,7 +325,7 @@ final class NativeQueryWrapper extends AbstractQuery
 
 
 
-	public function setHydrationCacheProfile(QueryCacheProfile $profile = null)
+	public function setHydrationCacheProfile(?QueryCacheProfile $profile = null)
 	{
 		$this->nativeQuery->setHydrationCacheProfile($profile);
 		return $this;
@@ -354,7 +340,7 @@ final class NativeQueryWrapper extends AbstractQuery
 
 
 
-	public function setResultCacheProfile(QueryCacheProfile $profile = null)
+	public function setResultCacheProfile(?QueryCacheProfile $profile = null)
 	{
 		$this->nativeQuery->setResultCacheProfile($profile);
 		return $this;
