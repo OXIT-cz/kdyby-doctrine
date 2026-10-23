@@ -58,18 +58,18 @@ class CacheCleaner
 		$dbalConfig = $this->entityManager->getConnection()->getConfiguration();
 
 		$cache = $this->cacheStorages;
-		$cache[] = $ormConfig->getHydrationCacheImpl();
-		$cache[] = $ormConfig->getMetadataCacheImpl();
-		$cache[] = $ormConfig->getQueryCacheImpl();
-		$cache[] = $ormConfig->getResultCacheImpl();
-		$cache[] = $dbalConfig->getResultCacheImpl();
+		$cache[] = $ormConfig->getHydrationCache();
+		$cache[] = $ormConfig->getMetadataCache();
+		$cache[] = $ormConfig->getQueryCache();
+		$cache[] = $dbalConfig->getResultCache();
 
 		foreach ($cache as $impl) {
-			if (!$impl instanceof ClearableCache) {
-				continue;
-			}
+			if ($impl instanceof ClearableCache) {
+				$impl->deleteAll();
 
-			$impl->deleteAll();
+			} elseif ($impl instanceof \Psr\Cache\CacheItemPoolInterface) {
+				$impl->clear();
+			}
 		}
 	}
 

@@ -117,7 +117,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 	{
 		$this->updating();
 
-		$this->fetchJoinCollection = !is_bool($fetchJoinCollection) ? (bool) $fetchJoinCollection : $fetchJoinCollection;
+		$this->fetchJoinCollection = (bool) $fetchJoinCollection;
 		$this->iterator = NULL;
 
 		return $this;
@@ -309,6 +309,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 
 	/**
 	 * @param int $hydrationMode
+	 * @phpstan-param string|ORM\AbstractQuery::HYDRATE_* $hydrationMode
 	 * @throws QueryException
 	 * @return \ArrayIterator
 	 */
@@ -322,7 +323,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 
 		try {
 			if ($this->fetchJoinCollection && $this->query instanceof ORM\Query && ($this->query->getMaxResults() > 0 || $this->query->getFirstResult() > 0)) {
-				$iterator = $this->createPaginatedQuery($this->query)->getIterator();
+				$iterator = new \ArrayIterator(iterator_to_array($this->createPaginatedQuery($this->query)->getIterator()));
 
 			} else {
 				$iterator = new \ArrayIterator($this->query->getResult());
@@ -344,6 +345,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 
 	/**
 	 * @param int $hydrationMode
+	 * @phpstan-param string|ORM\AbstractQuery::HYDRATE_* $hydrationMode
 	 * @return array
 	 */
 	public function toArray($hydrationMode = ORM\AbstractQuery::HYDRATE_OBJECT)

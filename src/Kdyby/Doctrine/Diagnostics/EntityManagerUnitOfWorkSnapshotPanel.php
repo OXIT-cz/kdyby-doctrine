@@ -99,11 +99,13 @@ class EntityManagerUnitOfWorkSnapshotPanel
 				'panel' => $panel,
 			];
 		}
+
+		return NULL;
 	}
 
 	/**
 	 * @param Doctrine\ORM\EntityManager $em
-	 * @return Panel
+	 * @return void
 	 */
 	public function bindEntityManager(Doctrine\ORM\EntityManager $em)
 	{

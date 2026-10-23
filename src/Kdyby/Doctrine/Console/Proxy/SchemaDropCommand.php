@@ -40,7 +40,7 @@ class SchemaDropCommand extends OrmDelegateCommand
 
 	protected function createCommand()
 	{
-		return new \Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand();
+		return new \Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand($this->getEntityManagerProvider());
 	}
 
 }

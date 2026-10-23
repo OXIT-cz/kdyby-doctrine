@@ -21,7 +21,7 @@ class CacheClearMetadataCommand extends OrmDelegateCommand
 
 	protected function createCommand()
 	{
-		return new MetadataCommand();
+		return new MetadataCommand($this->getEntityManagerProvider());
 	}
 
 }

@@ -15,7 +15,7 @@ use Doctrine\DBAL\Tools\Console\ConnectionNotFound;
 use Doctrine\DBAL\Tools\Console\ConnectionProvider;
 
 /**
- * Doctrine\DBAL console commands (e.g. ReservedWordsCommand) now require a ConnectionProvider
+ * Doctrine\DBAL console commands now require a ConnectionProvider
  * to be passed to their constructor, at a point where the delegate command doesn't know yet
  * which connection (--connection option) will be used. This provider is mutable, so the
  * delegate command can fill in the connection once it is known, right before execution.

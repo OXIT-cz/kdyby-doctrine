@@ -33,7 +33,7 @@ class RepositoryFactory implements Doctrine\ORM\Repository\RepositoryFactory
 	/**
 	 * The list of EntityRepository instances.
 	 *
-	 * @var Doctrine\ORM\EntityRepository[]
+	 * @var array<string, array<string, Doctrine\ORM\EntityRepository>>
 	 */
 	private $repositoryList = [];
 
@@ -114,7 +114,9 @@ class RepositoryFactory implements Doctrine\ORM\Repository\RepositoryFactory
 			$factory = $this->getRepositoryFactory($this->repositoryServicesMap[$customClass]);
 
 		} else {
-			return new $customClass($entityManager, $metadata);
+			$repository = new $customClass($entityManager, $metadata);
+			assert($repository instanceof Doctrine\ORM\EntityRepository);
+			return $repository;
 		}
 
 		return $factory->create($entityManager, $metadata);

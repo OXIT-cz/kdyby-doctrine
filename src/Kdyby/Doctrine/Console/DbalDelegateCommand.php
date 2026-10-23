@@ -42,7 +42,7 @@ abstract class DbalDelegateCommand extends Command
 	abstract protected function createCommand();
 
 	/**
-	 * Some doctrine/dbal console commands (e.g. ReservedWordsCommand) need a ConnectionProvider
+	 * Some doctrine/dbal console commands need a ConnectionProvider
 	 * passed to their constructor, at a time (createCommand(), called from configure()) when the
 	 * connection to use isn't known yet. This provider is filled in later by wrapCommand().
 	 *

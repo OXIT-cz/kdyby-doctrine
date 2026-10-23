@@ -37,7 +37,7 @@ class MappingDescribeCommand extends OrmDelegateCommand
 
 	protected function createCommand()
 	{
-		return new \Doctrine\ORM\Tools\Console\Command\MappingDescribeCommand();
+		return new \Doctrine\ORM\Tools\Console\Command\MappingDescribeCommand($this->getEntityManagerProvider());
 	}
 
 }

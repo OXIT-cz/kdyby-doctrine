@@ -28,8 +28,8 @@ class HashHydrator extends ArrayHydrator
 
 
 	/**
-	 * @param object $stmt
-	 * @param object $resultSetMapping
+	 * @param \Doctrine\DBAL\Result $stmt
+	 * @param \Doctrine\ORM\Query\ResultSetMapping $resultSetMapping
 	 * @param array $hints
 	 * @return array
 	 */
@@ -41,11 +41,12 @@ class HashHydrator extends ArrayHydrator
 
 
 	/**
-	 * @return ArrayHash
+	 * @return ArrayHash|false
 	 */
 	public function hydrateRow()
 	{
-		return ArrayHash::from(parent::hydrateRow());
+		$row = parent::hydrateRow();
+		return $row === FALSE ? FALSE : ArrayHash::from($row);
 	}
 
 }

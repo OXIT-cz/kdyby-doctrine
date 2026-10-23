@@ -41,7 +41,11 @@ class ImportCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$conn = $this->getHelper('db')->getConnection();
+		$dbHelper = $this->getHelper('db');
+		if (!$dbHelper instanceof \Kdyby\Doctrine\Console\Helper\ConnectionHelper) {
+			throw new RuntimeException(sprintf('The "db" helper must be an instance of %s.', \Kdyby\Doctrine\Console\Helper\ConnectionHelper::class));
+		}
+		$conn = $dbHelper->getConnection();
 
 		foreach ((array) $input->getArgument('file') as $fileName) {
 			$filePath = realpath($fileName) ?: $fileName;

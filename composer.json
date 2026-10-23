@@ -41,8 +41,8 @@
 	}
   ],
   "require": {
-	"php": "^7.3 || ^8.0",
-	"doctrine/orm": "^2.7.1",
+	"php": "^8.0",
+	"doctrine/orm": "^2.14",
 	"doctrine/dbal": "^3.6",
 	"doctrine/common": "^3.0.3",
 	"kdyby/events": "dev-php84",
@@ -53,6 +53,12 @@
 	"nette/di": "^3.1",
 	"nette/utils": "^3.2 || ^4.0",
 	"nette/bootstrap": "^3.1"
+  },
+  "require-dev": {
+	"phpstan/phpstan": "^2",
+	"phpstan/phpstan-deprecation-rules": "^2",
+	"phpstan/phpstan-nette": "^2",
+	"phpstan/extension-installer": "^1"
   },
   "suggest": {
 	"kdyby/doctrine-magic-accessors": "Fast-prototyping magic accessors trait for Doctrine entities",
@@ -80,5 +86,10 @@
 	"branch-alias": {
 	  "dev-master": "4.0-dev"
 	}
+  },
+  "config": {
+    "allow-plugins": {
+      "phpstan/extension-installer": true
+    }
   }
 }

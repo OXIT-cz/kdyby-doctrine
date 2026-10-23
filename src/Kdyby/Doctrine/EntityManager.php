@@ -42,7 +42,7 @@ class EntityManager extends Doctrine\ORM\EntityManager implements Persistence\Qu
 	private $nonLockingUniqueInserter;
 
 	/**
-	 * @var \Kdyby\Doctrine\Diagnostics\EntityManagerUnitOfWorkSnapshotPanel
+	 * @var \Kdyby\Doctrine\Diagnostics\EntityManagerUnitOfWorkSnapshotPanel|null
 	 */
 	private $panel;
 
@@ -83,7 +83,9 @@ class EntityManager extends Doctrine\ORM\EntityManager implements Persistence\Qu
 		$config = $this->getConfiguration();
 		if ($config instanceof Configuration) {
 			$class = $config->getQueryBuilderClassName();
-			return new $class($this);
+			$queryBuilder = new $class($this);
+			assert($queryBuilder instanceof QueryBuilder);
+			return $queryBuilder;
 		}
 
 		return new QueryBuilder($this);
@@ -177,7 +179,7 @@ class EntityManager extends Doctrine\ORM\EntityManager implements Persistence\Qu
 	 * in your application. Use the returned one instead!
 	 *
 	 * @param mixed $entity
-	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Doctrine\DBAL\Exception
 	 * @throws \Exception
 	 * @return bool|object
 	 */
@@ -194,6 +196,7 @@ class EntityManager extends Doctrine\ORM\EntityManager implements Persistence\Qu
 
 	/**
 	 * @param int $hydrationMode
+	 * @phpstan-param string|AbstractQuery::HYDRATE_* $hydrationMode
 	 * @return Doctrine\ORM\Internal\Hydration\AbstractHydrator
 	 * @throws \Doctrine\ORM\ORMException
 	 */

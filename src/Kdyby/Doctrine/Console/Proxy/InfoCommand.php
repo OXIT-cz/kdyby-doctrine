@@ -40,7 +40,7 @@ class InfoCommand extends OrmDelegateCommand
 
 	protected function createCommand()
 	{
-		return new \Doctrine\ORM\Tools\Console\Command\InfoCommand();
+		return new \Doctrine\ORM\Tools\Console\Command\InfoCommand($this->getEntityManagerProvider());
 	}
 
 }

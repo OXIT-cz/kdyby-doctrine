@@ -262,7 +262,7 @@ class QueryException extends \RuntimeException implements Exception
 /**
  * @author Michael Moravec
  */
-class ReadOnlyCollectionException extends NotSupportedException
+final class ReadOnlyCollectionException extends NotSupportedException
 {
 	/**
 	 * @throws ReadOnlyCollectionException

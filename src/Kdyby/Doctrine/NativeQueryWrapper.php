@@ -185,6 +185,9 @@ final class NativeQueryWrapper extends AbstractQuery
 
 
 
+	/**
+	 * @return string
+	 */
 	public function getSQL()
 	{
 		return $this->nativeQuery->getSQL();

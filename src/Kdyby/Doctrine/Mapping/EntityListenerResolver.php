@@ -39,7 +39,7 @@ class EntityListenerResolver implements \Doctrine\ORM\Mapping\EntityListenerReso
 	/**
      * Returns a entity listener instance for the given class name.
      *
-     * @param string $className The fully-qualified class name
+     * @param class-string $className The fully-qualified class name
      *
      * @return object|null An entity listener
      */

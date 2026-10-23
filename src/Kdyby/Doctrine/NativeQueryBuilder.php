@@ -52,6 +52,7 @@ class NativeQueryBuilder extends Doctrine\DBAL\Query\QueryBuilder
 
 	/**
 	 * @var int
+	 * @phpstan-var 1|2|3
 	 */
 	private $defaultRenameMode = Doctrine\ORM\Query\ResultSetMappingBuilder::COLUMN_RENAMING_INCREMENT;
 
@@ -105,6 +106,7 @@ class NativeQueryBuilder extends Doctrine\DBAL\Query\QueryBuilder
 
 	/**
 	 * @param int $defaultRenameMode
+	 * @phpstan-param 1|2|3 $defaultRenameMode
 	 * @return NativeQueryBuilder
 	 */
 	public function setDefaultRenameMode($defaultRenameMode)

@@ -78,7 +78,7 @@ class ClassMetadataFactory extends Doctrine\ORM\Mapping\ClassMetadataFactory
 	/**
 	 * Creates a new ClassMetadata instance for the given class name.
 	 *
-	 * @param string $className
+	 * @param class-string $className
 	 * @return ClassMetadata
 	 */
 	protected function newClassMetadataInstance($className)

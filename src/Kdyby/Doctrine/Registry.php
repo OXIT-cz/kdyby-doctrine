@@ -11,7 +11,7 @@
 namespace Kdyby\Doctrine;
 
 use Doctrine\Persistence\AbstractManagerRegistry;
-use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Exception\ORMException;
 use Kdyby;
 use Nette;
 
@@ -46,7 +46,7 @@ class Registry extends AbstractManagerRegistry
 	 */
 	public function __construct(array $connections, array $managers, $defaultConnection, $defaultManager, Nette\DI\Container $serviceLocator)
 	{
-		parent::__construct('ORM', $connections, $managers, $defaultConnection, $defaultManager, \Doctrine\ORM\Proxy\Proxy::class);
+		parent::__construct('ORM', $connections, $managers, $defaultConnection, $defaultManager, \Doctrine\Persistence\Proxy::class);
 		$this->serviceLocator = $serviceLocator;
 	}
 
@@ -103,7 +103,7 @@ class Registry extends AbstractManagerRegistry
 			}
 		}
 
-		throw ORMException::unknownEntityNamespace($alias);
+		throw \Doctrine\ORM\Exception\UnknownEntityNamespace::fromNamespaceAlias($alias);
 	}
 
 }

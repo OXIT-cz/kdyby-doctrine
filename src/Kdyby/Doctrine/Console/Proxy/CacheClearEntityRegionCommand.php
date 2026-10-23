@@ -21,7 +21,7 @@ class CacheClearEntityRegionCommand extends OrmDelegateCommand
 
 	protected function createCommand()
 	{
-		return new EntityRegionCommand();
+		return new EntityRegionCommand($this->getEntityManagerProvider());
 	}
 
 }

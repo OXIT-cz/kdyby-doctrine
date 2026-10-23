@@ -10,9 +10,9 @@
 
 namespace Kdyby\Doctrine\Console;
 
-use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use Kdyby\Doctrine\Console\Helper\ConnectionHelper;
 use Kdyby\Console\ContainerHelper;
+use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Helper\HelperSet;
 
 /**
@@ -30,8 +30,15 @@ final class CommandHelper
 
 
 
-	public static function setApplicationEntityManager(ContainerHelper $containerHelper, $emName)
+	/**
+	 * @return \Kdyby\Doctrine\EntityManager
+	 */
+	public static function setApplicationEntityManager(HelperInterface $containerHelper, $emName)
 	{
+		if (!$containerHelper instanceof ContainerHelper) {
+			throw new \LogicException(sprintf('The "container" helper must be an instance of %s.', ContainerHelper::class));
+		}
+
 		/** @var \Kdyby\Doctrine\Registry $registry */
 		$registry = $containerHelper->getByType(\Kdyby\Doctrine\Registry::class);
 		$em = $registry->getManager($emName);
@@ -39,15 +46,20 @@ final class CommandHelper
 		$helperSet = $containerHelper->getHelperSet();
 		if ($helperSet !== NULL) {
 			$helperSet->set(new ConnectionHelper($em->getConnection()), 'db');
-			$helperSet->set(new EntityManagerHelper($em), 'em');
 		}
+
+		return $em;
 	}
 
 	/**
 	 * @return \Doctrine\DBAL\Connection
 	 */
-	public static function setApplicationConnection(ContainerHelper $containerHelper, $connName)
+	public static function setApplicationConnection(HelperInterface $containerHelper, $connName)
 	{
+		if (!$containerHelper instanceof ContainerHelper) {
+			throw new \LogicException(sprintf('The "container" helper must be an instance of %s.', ContainerHelper::class));
+		}
+
 		/** @var \Kdyby\Doctrine\Registry $registry */
 		$registry = $containerHelper->getByType(\Kdyby\Doctrine\Registry::class);
 		$connection = $registry->getConnection($connName);

@@ -40,7 +40,7 @@ class SchemaCreateCommand extends OrmDelegateCommand
 
 	protected function createCommand()
 	{
-		return new \Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand();
+		return new \Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand($this->getEntityManagerProvider());
 	}
 
 }

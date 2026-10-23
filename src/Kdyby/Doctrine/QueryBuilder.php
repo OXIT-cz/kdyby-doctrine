@@ -71,7 +71,7 @@ class QueryBuilder extends Doctrine\ORM\QueryBuilder implements \IteratorAggrega
 
 			if (is_array($val)) {
 				$this->andWhere("$alias.$key " . ($not ? 'NOT ' : '') . "IN (:$paramName)");
-				$this->setParameter($paramName, $val, is_integer(reset($val)) ? Connection::PARAM_INT_ARRAY : Connection::PARAM_STR_ARRAY);
+				$this->setParameter($paramName, $val, is_integer(reset($val)) ? Doctrine\DBAL\ArrayParameterType::INTEGER : Doctrine\DBAL\ArrayParameterType::STRING);
 
 			} elseif ($val === NULL) {
 				$this->andWhere("$alias.$key IS " . ($not ? 'NOT ' : '') . 'NULL');
@@ -107,35 +107,30 @@ class QueryBuilder extends Doctrine\ORM\QueryBuilder implements \IteratorAggrega
 			return $this;
 		}
 
-		if (is_string($sort)) {
-			$reg = '~[^()]+(?=\))~';
-			if (preg_match($reg, $sort, $matches)) {
-				$sortMix = $sort;
-				$sort = $matches[0];
-				$alias = $this->autoJoin($sort, 'leftJoin');
-				$hiddenAlias = $alias . $sort . count($this->getDQLPart('orderBy'));
+		$reg = '~[^()]+(?=\))~';
+		if (preg_match($reg, $sort, $matches)) {
+			$sortMix = $sort;
+			$sort = $matches[0];
+			$alias = $this->autoJoin($sort, 'leftJoin');
+			$hiddenAlias = $alias . $sort . count($this->getDQLPart('orderBy'));
 
-				$this->addSelect(preg_replace($reg, $alias . '.' . $sort, $sortMix) . ' as HIDDEN ' . $hiddenAlias);
-				$rootAliases = $this->getRootAliases();
-				$this->addGroupBy(reset($rootAliases) . '.id');
-				$sort = $hiddenAlias;
+			$this->addSelect(preg_replace($reg, $alias . '.' . $sort, $sortMix) . ' as HIDDEN ' . $hiddenAlias);
+			$rootAliases = $this->getRootAliases();
+			$this->addGroupBy(reset($rootAliases) . '.id');
+			$sort = $hiddenAlias;
 
-			} else {
-				$alias = $this->autoJoin($sort);
-				$sort = $alias . '.' . $sort;
-			}
+		} else {
+			$alias = $this->autoJoin($sort);
+			$sort = $alias . '.' . $sort;
 		}
 
 		return $this->addOrderBy($sort, $order);
 	}
 
 
-	/**
-	 * @return \Doctrine\ORM\Internal\Hydration\IterableResult|\Traversable
-	 */
 	public function getIterator(): \Traversable
 	{
-		return $this->getQuery()->iterate();
+		yield from $this->getQuery()->toIterable();
 	}
 
 

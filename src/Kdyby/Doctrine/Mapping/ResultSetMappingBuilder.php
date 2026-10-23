@@ -23,6 +23,8 @@ use Nette;
 class ResultSetMappingBuilder extends Doctrine\ORM\Query\ResultSetMappingBuilder
 {
 
+	use Doctrine\ORM\Internal\SQLResultCasing;
+
 	/**
 	 * @var \Doctrine\ORM\EntityManager
 	 */
@@ -95,7 +97,7 @@ class ResultSetMappingBuilder extends Doctrine\ORM\Query\ResultSetMappingBuilder
 				continue;
 			}
 
-			$columnAlias = $this->platform->getSQLResultCasing($columnAliasMap[$columnName]);
+			$columnAlias = $this->getSQLResultCasing($this->platform, $columnAliasMap[$columnName]);
 
 			if (isset($this->fieldMappings[$columnAlias])) {
 				throw new \InvalidArgumentException("The column '$columnName' conflicts with another column in the mapper.");
@@ -124,7 +126,7 @@ class ResultSetMappingBuilder extends Doctrine\ORM\Query\ResultSetMappingBuilder
 
 			foreach ($associationMapping['joinColumns'] as $joinColumn) {
 				$columnName = $joinColumn['name'];
-				$columnAlias = $this->platform->getSQLResultCasing($columnAliasMap[$columnName]);
+				$columnAlias = $this->getSQLResultCasing($this->platform, $columnAliasMap[$columnName]);
 
 				if (isset($this->metaMappings[$columnAlias])) {
 					throw new \InvalidArgumentException("The column '$columnAlias' conflicts with another column in the mapper.");

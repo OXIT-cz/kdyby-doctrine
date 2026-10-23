@@ -13,7 +13,6 @@ namespace Kdyby\Doctrine;
 use Doctrine;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\Driver;
 use Kdyby;
 use Nette;
 use PDO;
@@ -46,7 +45,7 @@ class Connection extends Doctrine\DBAL\Connection
 	const POSTGRE_ERR_UNIQUE = 23505; // todo: verify, source: http://www.postgresql.org/docs/8.2/static/errcodes-appendix.html
 
 	/**
-	 * @var Doctrine\ORM\EntityManager
+	 * @var Doctrine\ORM\EntityManager|null
 	 */
 	private $entityManager;
 
@@ -343,11 +342,6 @@ class Connection extends Doctrine\DBAL\Connection
 
 	public function ping()
 	{
-		$conn = $this->getWrappedConnection();
-		if ($conn instanceof Driver\PingableConnection) {
-			return $conn->ping();
-		}
-
 		set_error_handler(function ($severity, $message) {
 			throw new \PDOException($message, $severity);
 		});

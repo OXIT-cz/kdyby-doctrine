@@ -21,7 +21,7 @@ class CacheClearResultCommand extends OrmDelegateCommand
 
 	protected function createCommand()
 	{
-		return new ResultCommand();
+		return new ResultCommand($this->getEntityManagerProvider());
 	}
 
 }

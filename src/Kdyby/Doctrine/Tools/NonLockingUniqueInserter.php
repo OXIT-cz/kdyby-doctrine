@@ -86,7 +86,7 @@ class NonLockingUniqueInserter
 	 * @todo fix error codes! PDO is returning database-specific codes
 	 *
 	 * @param object $entity
-	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Doctrine\DBAL\Exception
 	 * @throws \Exception
 	 * @return bool|object
 	 */
@@ -147,12 +147,11 @@ class NonLockingUniqueInserter
 		$this->prepareInsert($meta, array_merge($fields, $associations, $discriminator))->execute();
 
 		// assign ID to entity
-		if ($idGen = $meta->idGenerator) {
-			if ($idGen->isPostInsertGenerator()) {
-				$id = $idGen->generate($this->em, $entity);
-				$identifierFields = $meta->getIdentifierFieldNames();
-				$meta->setFieldValue($entity, reset($identifierFields), $id);
-			}
+		$idGen = $meta->idGenerator;
+		if ($idGen->isPostInsertGenerator()) {
+			$id = $idGen->generateId($this->em, $entity);
+			$identifierFields = $meta->getIdentifierFieldNames();
+			$meta->setFieldValue($entity, reset($identifierFields), $id);
 		}
 
 		// entity is now safely inserted to database, merge now
@@ -267,7 +266,7 @@ class NonLockingUniqueInserter
 				$quotedColumn = $this->quotes->getJoinColumnName($joinColumn, $meta, $this->platform);
 				$associations[$sourceColumn]['value'] = $value;
 				$associations[$sourceColumn]['quotedColumn'] = $quotedColumn;
-				$associations[$sourceColumn]['type'] = $targetClass->getTypeOfColumn($targetColumn);
+				$associations[$sourceColumn]['type'] = $targetClass->getTypeOfField($targetClass->getFieldForColumn($targetColumn));
 			}
 		}
 

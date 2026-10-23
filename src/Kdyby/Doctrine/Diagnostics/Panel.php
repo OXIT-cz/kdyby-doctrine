@@ -35,7 +35,7 @@ use Tracy\IBarPanel;
  * @author Patrik Votoček
  * @author Filip Procházka <filip@prochazka.su>
  */
-class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
+class Panel implements IBarPanel, QueryLogger
 {
 
 	use \Kdyby\StrictObjects\Scream;
@@ -69,18 +69,18 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 	];
 
 	/**
-	 * @var \Doctrine\DBAL\Connection
+	 * @var \Doctrine\DBAL\Connection|null
 	 */
 	private $connection;
 
 	/**
-	 * @var \Doctrine\ORM\EntityManager
+	 * @var \Doctrine\ORM\EntityManager|null
 	 */
 	private $em;
 
 
 
-	/***************** Doctrine\DBAL\Logging\SQLLogger ********************/
+	/***************** QueryLogger ********************/
 
 
 
@@ -197,8 +197,8 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 
 		} else {
 			$host = sprintf('host: %s%s/%s',
-				$this->connection->getHost(),
-				(($p = $this->connection->getPort()) ? ':' . $p : ''),
+				$connParams['host'] ?? '',
+				(isset($connParams['port']) ? ':' . $connParams['port'] : ''),
 				$this->connection->getDatabase()
 			);
 		}
@@ -370,7 +370,7 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 
 		} elseif ($e instanceof Doctrine\ORM\Mapping\MappingException) {
 			if ($invalidEntity = Strings::match($e->getMessage(), '~^Class "([\\S]+)" .*? is not .*? valid~i')) {
-				$refl = Nette\Reflection\ClassType::from($invalidEntity[1]);
+				$refl = new \ReflectionClass($invalidEntity[1]);
 				$file = $refl->getFileName();
 				$errorLine = $refl->getStartLine();
 
@@ -554,7 +554,7 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 	 * @param array $params
 	 * @param array $types
 	 * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
-	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Doctrine\DBAL\Exception
 	 * @throws \Nette\Utils\RegexpException
 	 * @return string
 	 */
@@ -598,7 +598,7 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 
 		if (Nette\Utils\Validators::isList($params)) {
 			$parts = explode('?', $query);
-			if (count($params) > $parts) {
+			if (count($params) > count($parts)) {
 				throw new Kdyby\Doctrine\InvalidStateException("Too mny parameters passed to query.");
 			}
 
@@ -647,7 +647,7 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 			return FALSE;
 		}
 
-		$refl = Nette\Reflection\ClassType::from($context['class']);
+		$refl = new \ReflectionClass($context['class']);
 		$file = $refl->getFileName();
 		$line = NULL;
 
@@ -672,12 +672,12 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 
 
 	/**
-	 * @param \Reflector|\Nette\Reflection\ClassType|\Nette\Reflection\Method|\Nette\Reflection\Property $refl
+	 * @param \ReflectionClass<object>|\ReflectionMethod|\ReflectionProperty $refl
 	 * @param \Exception|\Throwable $e
 	 * @param int|NULL $startLine
 	 * @return int|NULL
 	 */
-	public static function calculateErrorLine(\Reflector $refl, $e, $startLine = NULL)
+	public static function calculateErrorLine(\ReflectionClass|\ReflectionMethod|\ReflectionProperty $refl, $e, $startLine = NULL)
 	{
 		if ($startLine === NULL && method_exists($refl, 'getStartLine')) {
 			$startLine = $refl->getStartLine();
@@ -710,11 +710,11 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 
 
 	/**
-	 * @param \Reflector|\Nette\Reflection\ClassType|\Nette\Reflection\Method $refl
+	 * @param \ReflectionClass<object>|\ReflectionMethod|\ReflectionProperty $refl
 	 * @param int $symbolPos
 	 * @return int
 	 */
-	protected static function calculateAffectedLine(\Reflector $refl, $symbolPos)
+	protected static function calculateAffectedLine(\ReflectionClass|\ReflectionMethod|\ReflectionProperty $refl, $symbolPos)
 	{
 		$doc = $refl->getDocComment();
 		/** @var int|NULL $atPos */
@@ -730,11 +730,11 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 
 
 	/**
-	 * @param \Reflector|Nette\Reflection\ClassType|Nette\Reflection\Method $refl
+	 * @param \ReflectionClass<object>|\ReflectionMethod|\ReflectionProperty $refl
 	 * @param string $annotation
 	 * @return string
 	 */
-	private static function findRenamed(\Reflector $refl, $annotation)
+	private static function findRenamed(\ReflectionClass|\ReflectionMethod|\ReflectionProperty $refl, $annotation)
 	{
 		$parser = new Doctrine\Common\Annotations\PhpParser();
 		$imports = $parser->parseClass($refl instanceof \ReflectionClass ? $refl : $refl->getDeclaringClass());
@@ -761,11 +761,11 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 
 
 	/**
-	 * @param \Nette\Reflection\ClassType|\Nette\Reflection\Method|\Reflector $refl
+	 * @param \ReflectionClass<object>|\ReflectionMethod|\ReflectionProperty $refl
 	 * @param int|null $atPos
 	 * @return string
 	 */
-	private static function cleanedPhpDoc(\Reflector $refl, &$atPos = NULL)
+	private static function cleanedPhpDoc(\ReflectionClass|\ReflectionMethod|\ReflectionProperty $refl, &$atPos = NULL)
 	{
 		return trim(substr($doc = $refl->getDocComment(), $atPos = strpos($doc, '@') - 1), '* /');
 	}
@@ -805,15 +805,14 @@ class Panel implements IBarPanel, Doctrine\DBAL\Logging\SQLLogger
 			throw new Kdyby\Doctrine\InvalidStateException("Doctrine Panel is not bound to connection.");
 		}
 
-		$config = $this->connection->getConfiguration();
-		$logger = $config->getSQLLogger();
-
-		if ($logger instanceof Doctrine\DBAL\Logging\LoggerChain) {
-			$logger->addLogger($this);
-
-		} else {
-			$config->setSQLLogger($this);
+		foreach ($this->connection->getConfiguration()->getMiddlewares() as $middleware) {
+			if ($middleware instanceof QueryLoggingMiddleware) {
+				$middleware->addLogger($this);
+				return;
+			}
 		}
+
+		throw new Kdyby\Doctrine\InvalidStateException(sprintf('Connection is not configured with %s.', QueryLoggingMiddleware::class));
 	}
 
 

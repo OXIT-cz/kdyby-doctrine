@@ -11,3 +11,15 @@ parameters:
 		- '#Call to an undefined method object::getId\(\)#' # class SimpleParameterFormatter
 		- '#Method Kdyby\\Doctrine\\NativeQueryBuilder::(join|where|andWhere|orWhere)\(\) should return \$this but returns call_user_func_array#' # NativeQueryBuilder shortcuts
 		- '#Parameter \#1 \$parameters of method Doctrine\\ORM\\AbstractQuery::setParameters\(\) expects Doctrine\\Common\\Collections\\ArrayCollection&iterable, array given\.#'
+		- '#Call to deprecated method resolveException\(\) of class Kdyby\\Doctrine\\Connection\.#' # own BC exception-wrapping mechanism, no replacement
+		- '#Fetching deprecated class constant (MYSQL|SQLITE|POSTGRE)_ERR_UNIQUE of class Kdyby\\Doctrine\\Connection\.#' # own BC constants, no replacement
+		- '#Call to deprecated method merge\(\) of class Doctrine\\ORM\\EntityManager#' # no replacement exists upstream
+		- '#Call to method fromNamespaceAlias\(\) of deprecated class Doctrine\\ORM\\Exception\\UnknownEntityNamespace#' # entity namespace aliases are deprecated upstream with no replacement, still part of our public API
+		-
+			message: '#Access to constant on deprecated class Doctrine\\ORM\\Mapping\\Driver\\(AnnotationDriver|YamlDriver)#'
+			path: src/Kdyby/Doctrine/DI/OrmExtension.php
+			# configurable "annotations"/"yml" drivers, removed in ORM 3; dropping them requires users to migrate mapping to attributes/xml
+		-
+			message: '#Call to deprecated method getName\(\) of class Doctrine\\DBAL\\Types\\Type#'
+			path: src/Kdyby/Doctrine/DI/OrmExtension.php
+			# lookupName() works only for registered types, config types are not registered at compile time

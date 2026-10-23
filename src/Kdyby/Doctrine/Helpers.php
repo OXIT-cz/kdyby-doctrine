@@ -12,7 +12,7 @@ namespace Kdyby\Doctrine;
 
 use Kdyby;
 use Nette;
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 
 
 
@@ -50,7 +50,7 @@ final class Helpers
 				$type = NULL;
 
 				if ($value instanceof \DateTime || $value instanceof \DateTimeImmutable) {
-					$type = Type::DATETIME;
+					$type = Types::DATETIME_MUTABLE;
 
 				} elseif (is_array($value)) {
 					$type = Connection::PARAM_STR_ARRAY;

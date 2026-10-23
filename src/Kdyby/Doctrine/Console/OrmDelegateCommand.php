@@ -32,9 +32,26 @@ abstract class OrmDelegateCommand extends Command
 	protected $command;
 
 	/**
+	 * @var MutableEntityManagerProvider|NULL
+	 */
+	private $entityManagerProvider;
+
+	/**
 	 * @return \Symfony\Component\Console\Command\Command
 	 */
 	abstract protected function createCommand();
+
+	/**
+	 * Called from createCommand() before the --em option is known; filled in by wrapCommand().
+	 */
+	protected function getEntityManagerProvider(): MutableEntityManagerProvider
+	{
+		if ($this->entityManagerProvider === NULL) {
+			$this->entityManagerProvider = new MutableEntityManagerProvider();
+		}
+
+		return $this->entityManagerProvider;
+	}
 
 	/**
 	 * @param string[]|bool|string|null $entityManagerName
@@ -42,7 +59,8 @@ abstract class OrmDelegateCommand extends Command
 	 */
 	protected function wrapCommand($entityManagerName)
 	{
-		CommandHelper::setApplicationEntityManager($this->getHelper('container'), $entityManagerName);
+		$entityManager = CommandHelper::setApplicationEntityManager($this->getHelper('container'), $entityManagerName);
+		$this->getEntityManagerProvider()->setEntityManager($entityManager);
 		$this->command->setApplication($this->getApplication());
 		return $this->command;
 	}

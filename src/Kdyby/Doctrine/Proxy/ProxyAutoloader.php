@@ -18,7 +18,7 @@ use Nette;
 /**
  * @author Filip Procházka <filip@prochazka.su>
  */
-class ProxyAutoloader
+final class ProxyAutoloader
 {
 
 	use \Kdyby\StrictObjects\Scream;

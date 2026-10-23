@@ -10,7 +10,6 @@
 
 namespace Kdyby\Doctrine\Diagnostics;
 
-use Doctrine\DBAL\Logging\SQLLogger;
 use Kdyby;
 use Nette;
 use Tracy\Debugger;
@@ -20,7 +19,7 @@ use Tracy\Debugger;
 /**
  * @author Filip Procházka <filip@prochazka.su>
  */
-class FileLogger implements SQLLogger
+class FileLogger implements QueryLogger
 {
 
 	use \Kdyby\StrictObjects\Scream;

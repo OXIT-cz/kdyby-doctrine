@@ -40,7 +40,7 @@ class ValidateSchemaCommand extends OrmDelegateCommand
 
 	protected function createCommand()
 	{
-		return new \Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand();
+		return new \Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand($this->getEntityManagerProvider());
 	}
 
 }

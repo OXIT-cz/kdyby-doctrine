@@ -116,11 +116,11 @@ abstract class QueryObject implements Kdyby\Persistence\Query
 
 	/**
 	 * @param Queryable $repository
-	 * @return \Doctrine\ORM\Query|\Doctrine\ORM\QueryBuilder
+	 * @return \Doctrine\ORM\Query|\Doctrine\ORM\QueryBuilder|null
 	 */
 	protected function doCreateCountQuery(Queryable $repository)
 	{
-
+		return NULL;
 	}
 
 
@@ -161,6 +161,7 @@ abstract class QueryObject implements Kdyby\Persistence\Query
 	/**
 	 * @param \Kdyby\Persistence\Queryable $repository
 	 * @param int $hydrationMode
+	 * @phpstan-param string|AbstractQuery::HYDRATE_* $hydrationMode
 	 *
 	 * @return \Kdyby\Doctrine\ResultSet|array
 	 */
@@ -248,7 +249,7 @@ abstract class QueryObject implements Kdyby\Persistence\Query
 			throw new UnexpectedValueException(sprintf(
 				"Method " . get_called_class() . "::doCreateQuery must return " .
 				"instanceof %s or %s, " .
-				(is_object($query) ? 'instance of ' . get_class($query) : gettype($query)) . " given.",
+				'instance of ' . get_class($query) . " given.",
 				\Doctrine\ORM\Query::class,
 				\Kdyby\Doctrine\QueryBuilder::class
 			));
