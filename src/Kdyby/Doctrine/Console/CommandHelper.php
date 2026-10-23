@@ -10,8 +10,8 @@
 
 namespace Kdyby\Doctrine\Console;
 
-use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
+use Kdyby\Doctrine\Console\Helper\ConnectionHelper;
 use Kdyby\Console\ContainerHelper;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -43,6 +43,9 @@ final class CommandHelper
 		}
 	}
 
+	/**
+	 * @return \Doctrine\DBAL\Connection
+	 */
 	public static function setApplicationConnection(ContainerHelper $containerHelper, $connName)
 	{
 		/** @var \Kdyby\Doctrine\Registry $registry */
@@ -53,6 +56,8 @@ final class CommandHelper
 		if ($helperSet !== NULL) {
 			$helperSet->set(new ConnectionHelper($connection), 'db');
 		}
+
+		return $connection;
 	}
 
 }

@@ -32,9 +32,30 @@ abstract class DbalDelegateCommand extends Command
 	protected $command;
 
 	/**
+	 * @var \Kdyby\Doctrine\Console\MutableConnectionProvider|NULL
+	 */
+	private $connectionProvider;
+
+	/**
 	 * @return \Symfony\Component\Console\Command\Command
 	 */
 	abstract protected function createCommand();
+
+	/**
+	 * Some doctrine/dbal console commands (e.g. ReservedWordsCommand) need a ConnectionProvider
+	 * passed to their constructor, at a time (createCommand(), called from configure()) when the
+	 * connection to use isn't known yet. This provider is filled in later by wrapCommand().
+	 *
+	 * @return \Kdyby\Doctrine\Console\MutableConnectionProvider
+	 */
+	protected function getConnectionProvider()
+	{
+		if ($this->connectionProvider === NULL) {
+			$this->connectionProvider = new MutableConnectionProvider();
+		}
+
+		return $this->connectionProvider;
+	}
 
 	/**
 	 * @param string[]|bool|string|null $connectionName
@@ -42,7 +63,8 @@ abstract class DbalDelegateCommand extends Command
 	 */
 	protected function wrapCommand($connectionName)
 	{
-		CommandHelper::setApplicationConnection($this->getHelper('container'), $connectionName);
+		$connection = CommandHelper::setApplicationConnection($this->getHelper('container'), $connectionName);
+		$this->getConnectionProvider()->setConnection($connection);
 		$this->command->setApplication($this->getApplication());
 		return $this->command;
 	}

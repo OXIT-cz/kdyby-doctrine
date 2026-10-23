@@ -17,7 +17,7 @@ class ReservedWordsCommand extends DbalDelegateCommand
 
 	protected function createCommand()
 	{
-		return new \Doctrine\DBAL\Tools\Console\Command\ReservedWordsCommand();
+		return new \Doctrine\DBAL\Tools\Console\Command\ReservedWordsCommand($this->getConnectionProvider());
 	}
 
 }

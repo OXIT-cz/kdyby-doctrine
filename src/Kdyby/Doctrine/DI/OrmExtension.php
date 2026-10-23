@@ -27,7 +27,7 @@ use Nette\Utils\Validators;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Kdyby\Annotations\DI\AnnotationsExtension;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
-use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
+use Kdyby\Doctrine\Console\Helper\ConnectionHelper;
 
 /**
  * @author Filip Procházka <filip@prochazka.su>

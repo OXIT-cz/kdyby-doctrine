@@ -20,7 +20,7 @@ class ImportCommand extends DbalDelegateCommand
 
 	protected function createCommand()
 	{
-		return new \Doctrine\DBAL\Tools\Console\Command\ImportCommand();
+		return new \Kdyby\Doctrine\Console\Command\ImportCommand();
 	}
 
 }
