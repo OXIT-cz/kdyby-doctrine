@@ -24,10 +24,14 @@ interface IRepositoryFactory
 {
 
 	/**
-	 * @param ORM\EntityManagerInterface $entityManager
-	 * @param ORM\Mapping\ClassMetadata $classMetadata
+	 * Parameters are named to match Doctrine\ORM\EntityRepository::__construct($em, $class), so that
+	 * custom repositories which don't override the constructor are autowired by Nette DI without
+	 * requiring an explicit argument mapping (see Kdyby\Doctrine\DI\OrmExtension).
+	 *
+	 * @param ORM\EntityManagerInterface $em
+	 * @param ORM\Mapping\ClassMetadata $class
 	 * @return EntityRepository
 	 */
-	public function create(ORM\EntityManagerInterface $entityManager, ORM\Mapping\ClassMetadata $classMetadata): EntityRepository;
+	public function create(ORM\EntityManagerInterface $em, ORM\Mapping\ClassMetadata $class): EntityRepository;
 
 }

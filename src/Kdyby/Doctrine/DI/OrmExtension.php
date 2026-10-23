@@ -387,11 +387,10 @@ class OrmExtension extends Nette\DI\CompilerExtension
 
 		$builder->addFactoryDefinition($this->prefix('repositoryFactory.' . $name . '.defaultRepositoryFactory'))
 			->setImplement(IRepositoryFactory::class)
-//			->setParameters([EntityManagerInterface::class . ' entityManager', Doctrine\ORM\Mapping\ClassMetadata::class . ' classMetadata'])
 			->getResultDefinition()
 			->setFactory($config['defaultRepositoryClassName'])
 			->setType(Doctrine\ORM\EntityRepository::class)
-			->setArguments([new Code\PhpLiteral('$entityManager'), new Code\PhpLiteral('$classMetadata')])
+			->setArguments([new Code\PhpLiteral('$em'), new Code\PhpLiteral('$class')])
 			->setAutowired(FALSE);
 
 		$builder->addDefinition($this->prefix($name . '.schemaValidator'))
@@ -695,13 +694,12 @@ class OrmExtension extends Nette\DI\CompilerExtension
 			$factoryServiceName = $this->prefix('repositoryFactory.' . $originalServiceName);
 			$factoryDef = $builder->addFactoryDefinition($factoryServiceName)
 				->setImplement(IRepositoryFactory::class)
-				// ->setParameters([Doctrine\ORM\EntityManagerInterface::class . ' entityManager', Doctrine\ORM\Mapping\ClassMetadata::class . ' classMetadata'])
 				->setAutowired(FALSE)
 				->getResultDefinition()
 				->setFactory($originalDef->getFactory());
 			$factoryStatement = $originalDef->getFactory() ?: new Statement($originalDef->getFactory());
-			$factoryStatement->arguments[0] = new Code\PhpLiteral('$entityManager');
-			$factoryStatement->arguments[1] = new Code\PhpLiteral('$classMetadata');
+			$factoryStatement->arguments[0] = new Code\PhpLiteral('$em');
+			$factoryStatement->arguments[1] = new Code\PhpLiteral('$class');
 			$boundManagers = $this->getServiceBoundManagers($originalDef);
 			Validators::assert($boundManagers, 'list:1', 'bound manager');
 
